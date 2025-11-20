@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "./bbta-client-fe"
+		},
+		{
+			"path": "./bbta-be"
 		}
 	],
 	"settings": {}
