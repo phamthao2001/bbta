@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "./bbta-be"
+		},
+		{
+			"path": "./bbta-admin-fe"
 		}
 	],
 	"settings": {}
