@@ -16,7 +16,7 @@ const addTable = async (req: Request, res: Response) => {
   const newTable = new table_model({
     name,
     description,
-    capacity,
+    capacity: Number(capacity),
   });
 
   try {
