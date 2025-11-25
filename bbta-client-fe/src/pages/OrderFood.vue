@@ -11,136 +11,56 @@
       </div>
     </div> -->
 
-    <div class="px-3 py-6 bg-white">
-      <h2 class="font-semibold text-lg mb-6 text-2xl">For you</h2>
-      <div class="flex flex-col">
-        <div class="flex border-b border-[#f0efef] pb-4 gap-4">
-          <div class="w-[100px] h-[100px]">
-            <img src="@/assets/img/dish.png" alt="" class="w-[100px] h-[100px] max-w-[unset]" />
-          </div>
-
-          <div class="grow">
-            <div class="font-normal break-all text-[1.15rem] w-full leading-normal mb-4">
-              ten mon anaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-            </div>
-
-            <div class="text-[12px] leading-normal font-normal text-[#acacac] break-all mb-6">
-              mô tả món ăn fasdf sadf jsdf asjdfhaskdfasfasfasdfasdfas fs a
-            </div>
-
-            <div class="flex justify-between items-center">
-              <div class="text-[16px] leading-normal font-medium text-[#1c1c1c]">125.000 đ</div>
-
+    <template v-for="c in CATEGORIES" :key="c">
+      <template v-if="groupedFoods[c]?.length">
+        <div class="px-3 py-6 bg-white">
+          <h2 class="font-semibold text-lg mb-2 text-2xl">{{ mapLabelCategory[c] }}</h2>
+          <div class="flex flex-col">
+            <template v-for="(f, index) in groupedFoods[c]" :key="f._id">
               <div
-                class="w-8 h-8 bg-[#00b14f] flex justify-center items-center rounded-full cursor-pointer"
-                @click="
-                  addToCart({
-                    id: 1,
-                    name: 'dish',
-                    price: 12,
-                  })
-                "
+                class="flex border-[#f0efef] pt-4 gap-4"
+                :class="{
+                  'border-b pb-4': index !== groupedFoods[c].length - 1,
+                }"
               >
-                <i class="fa-solid fa-plus text-white"></i>
+                <div class="w-[100px] h-[100px]">
+                  <img :src="f.image_url" alt="" class="w-[100px] h-[100px] max-w-[unset]" />
+                </div>
+
+                <div class="grow">
+                  <div class="font-normal break-all text-[1.15rem] w-full leading-normal mb-4">
+                    {{ f.name }}
+                  </div>
+
+                  <div class="text-[12px] leading-normal font-normal text-[#acacac] break-all mb-6">
+                    {{ f.description }}
+                  </div>
+
+                  <div class="flex justify-between items-center">
+                    <div class="text-[16px] leading-normal font-medium text-[#1c1c1c]">
+                      {{ f.price.toLocaleString() }} đ
+                    </div>
+
+                    <div
+                      class="w-8 h-8 bg-[#00b14f] flex justify-center items-center rounded-full cursor-pointer"
+                      @click="
+                        addToCart({
+                          id: f._id,
+                          name: f.name,
+                          price: f.price,
+                        })
+                      "
+                    >
+                      <i class="fa-solid fa-plus text-white"></i>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
+            </template>
           </div>
         </div>
-
-        <div class="flex border-[#f0efef] pt-4 gap-4">
-          <div class="w-[100px] h-[100px]">
-            <img src="@/assets/img/dish.png" alt="" class="w-[100px] h-[100px] max-w-[unset]" />
-          </div>
-
-          <div class="grow">
-            <div class="font-normal break-all text-[1.15rem] w-full leading-normal mb-4">
-              ten mon anaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-            </div>
-
-            <div class="text-[12px] leading-normal font-normal text-[#acacac] break-all mb-6">
-              mô tả món ăn fasdf sadf jsdf asjdfhaskdfasfasfasdfasdfas fs a
-            </div>
-
-            <div class="flex justify-between items-center">
-              <div class="text-[16px] leading-normal font-medium text-[#1c1c1c]">125.000 đ</div>
-
-              <div
-                class="w-8 h-8 bg-[#00b14f] flex justify-center items-center rounded-full cursor-pointer"
-                @click="
-                  addToCart({
-                    id: 2,
-                    name: 'dish',
-                    price: 20,
-                  })
-                "
-              >
-                <i class="fa-solid fa-plus text-white"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="px-3 py-6 bg-white mt-3">
-      <h2 class="font-semibold text-lg mb-6 text-2xl">For you</h2>
-      <div class="flex flex-col">
-        <div class="flex border-b border-[#f0efef] pb-4 gap-4">
-          <div class="w-[100px] h-[100px]">
-            <img src="@/assets/img/dish.png" alt="" class="w-[100px] h-[100px] max-w-[unset]" />
-          </div>
-
-          <div class="grow">
-            <div class="font-normal break-all text-[1.15rem] w-full leading-normal mb-4">
-              ten mon anaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-            </div>
-
-            <div class="text-[12px] leading-normal font-normal text-[#acacac] break-all mb-6">
-              mô tả món ăn fasdf sadf jsdf asjdfhaskdfasfasfasdfasdfas fs a
-            </div>
-
-            <div class="flex justify-between items-center">
-              <div class="text-[16px] leading-normal font-medium text-[#1c1c1c]">125.000 đ</div>
-
-              <div
-                class="w-8 h-8 bg-[#00b14f] flex justify-center items-center rounded-full cursor-pointer"
-                @click="log()"
-              >
-                <i class="fa-solid fa-plus text-white"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex border-[#f0efef] pt-4 gap-4">
-          <div class="w-[100px] h-[100px]">
-            <img src="@/assets/img/dish.png" alt="" class="w-[100px] h-[100px] max-w-[unset]" />
-          </div>
-
-          <div class="grow">
-            <div class="font-normal break-all text-[1.15rem] w-full leading-normal mb-4">
-              ten mon anaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-            </div>
-
-            <div class="text-[12px] leading-normal font-normal text-[#acacac] break-all mb-6">
-              mô tả món ăn fasdf sadf jsdf asjdfhaskdfasfasfasdfasdfas fs a
-            </div>
-
-            <div class="flex justify-between items-center">
-              <div class="text-[16px] leading-normal font-medium text-[#1c1c1c]">125.000 đ</div>
-
-              <div
-                class="w-8 h-8 bg-[#00b14f] flex justify-center items-center rounded-full cursor-pointer"
-              >
-                <i class="fa-solid fa-plus text-white"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div></div>
+      </template>
+    </template>
 
     <!-- sticky bottom order bar (shows only when there are orders) -->
     <template v-if="orders.length && showDetail">
@@ -180,7 +100,7 @@
                   <div class="grow flex flex-col">
                     <div class="font-semibold text-sm break-all">{{ order.name }}</div>
                     <div class="break-all text-[12px] leading-normal font-medium text-[#1c1c1c]">
-                      {{ order.price }} đ
+                      {{ order.price?.toLocaleString() }} đ
                     </div>
                   </div>
 
@@ -214,12 +134,15 @@
                 {{ totalItems }}
               </div>
               <div>
-                <div class="font-bold text-lg">{{ 12 }}</div>
+                <div class="font-bold text-lg">{{ totalPrice.toLocaleString() }} đ</div>
               </div>
             </div>
             <div class="grow"></div>
-            <button class="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded-full">
-              Order Now
+            <button
+              class="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded-full"
+              @click.stop="orderFood()"
+            >
+              Đặt món
             </button>
           </div>
         </div>
@@ -229,10 +152,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { computed } from 'vue'
 
+import { api } from '@/plugin/axios'
 import { useOrderFood } from '@/stores/useOrderFood'
+import { CATEGORIES, mapLabelCategory } from '@/utils/categories'
+
+const groupedFoods = ref<{ [key in (typeof CATEGORIES)[number]]: any[] }>({})
 
 const showDetail = ref(false)
 const { orders, addToCart, removeFromCart } = useOrderFood()
@@ -242,7 +169,6 @@ watch(
   () => {
     if (orders.value.length === 0) {
       showDetail.value = false
-      console.log('no orders', showDetail.value)
     }
   },
   { deep: true },
@@ -250,6 +176,10 @@ watch(
 
 const totalItems = computed(() => {
   return orders.value.reduce((sum, item) => sum + item.quantity, 0)
+})
+
+const totalPrice = computed(() => {
+  return orders.value.reduce((sum, item) => sum + (item.price ?? 0) * item.quantity, 0)
 })
 
 const onClickHiddenDetail = () => {
@@ -261,13 +191,35 @@ const onClickHiddenDetail = () => {
 const onClickShowDetail = () => {
   if (!showDetail.value) {
     showDetail.value = true
-    console.log('show detail', showDetail.value)
   }
 }
 
-const log = () => {
-  console.log('clicked', showDetail.value)
+const orderFood = () => {
+  orders.value = []
+  showDetail.value = false
 }
+
+const getFood = async () => {
+  const res = await api.get('/food')
+
+  const foods = res.data
+
+  // group foods by category
+  const f = foods.reduce((groups, food) => {
+    const category = food.category
+    if (!groups[category]) {
+      groups[category] = []
+    }
+    groups[category].push(food)
+    return groups
+  }, {})
+
+  groupedFoods.value = f
+}
+
+onMounted(async () => {
+  await getFood()
+})
 </script>
 
 <style scoped>

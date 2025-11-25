@@ -4,8 +4,8 @@ const food_schema = new Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
   category: { type: String, required: true },
-  image_url: { type: String, required: true },
-  description: { type: String, required: true },
+  image_url: { type: String },
+  description: { type: String },
 });
 
 const food_model = model('Food', food_schema);
