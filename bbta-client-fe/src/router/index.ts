@@ -13,6 +13,16 @@ const router = createRouter({
       name: 'code-login',
       component: () => import('@/pages/CodeLogin.vue'),
     },
+    {
+      path: '/home',
+      name: 'home',
+      component: () => import('@/pages/HomeView.vue'),
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('@/pages/LoginView.vue'),
+    },
   ],
 })
 
