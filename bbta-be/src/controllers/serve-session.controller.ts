@@ -30,6 +30,21 @@ const createServeSession = async (req: Request, res: Response) => {
   }
 };
 
+const getServeSessionById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const serveSession = await serve_session_model.findById(id);
+    if (!serveSession) {
+      return res.status(404).json({ message: 'Serve session not found' });
+    }
+
+    return res.status(200).json(serveSession);
+  } catch (error) {
+    return res.status(500).json({ message: 'Error retrieving serve session', error });
+  }
+};
+
 export const serve_session_controller = {
   createServeSession,
+  getServeSessionById,
 };

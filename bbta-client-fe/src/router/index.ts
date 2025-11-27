@@ -8,6 +8,11 @@ const router = createRouter({
       name: 'order-food',
       component: () => import('@/pages/OrderFood.vue'),
     },
+    {
+      path: '/code-login',
+      name: 'code-login',
+      component: () => import('@/pages/CodeLogin.vue'),
+    },
   ],
 })
 
