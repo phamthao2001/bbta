@@ -5,7 +5,7 @@
     <div class="flex-1 flex">
       <SidebarSection />
 
-      <main class="flex-1 overflow-auto bg-gray-50">
+      <main class="flex-1 overflow-auto bg-gray-50 h-[calc(100vh-64px)]">
         <RouterView />
       </main>
     </div>

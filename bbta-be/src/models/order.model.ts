@@ -25,6 +25,8 @@ const order_schema = new Schema({
       quantity: { type: Number, required: true },
       table_id: { type: Schema.Types.ObjectId, ref: 'Table', required: true },
       time_cancelled: { type: Date, required: true },
+      cancelled_by_staff_id: { type: Schema.Types.ObjectId, ref: 'Staff' },
+      cancelled_by_customer: { type: Boolean },
       reason_cancelled: { type: String },
     },
   ],
@@ -37,7 +39,7 @@ const order_schema = new Schema({
       time_served: { type: Date, required: true },
     },
   ],
-  total_price: { type: Number, required: true },
+  time_ordered: { type: Date, required: true, default: Date.now },
 });
 
 const order_model = model('Order', order_schema);

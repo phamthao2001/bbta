@@ -1,5 +1,10 @@
 <template>
-  <div class="h-screen bg-gray-50 overflow-auto">
+  <div
+    class="h-screen bg-gray-50 overflow-auto"
+    :class="{
+      'pb-20': orders.length,
+    }"
+  >
     <!-- category -->
     <!-- <div class="fixed h-12 w-full bg-white box-shadow flex top-0">
       <div class="h-full w-10 justify-center items-center flex">
@@ -39,19 +44,36 @@
                   <div class="flex justify-between items-center">
                     <div class="text-[16px] leading-normal font-medium text-[#1c1c1c]">
                       {{ f.price.toLocaleString() }} đ
+                      <span class="text-[#00b14f]">
+                        {{
+                          foodIdsInOrder.includes(f._id)
+                            ? `x ${getFoodInOrder(f._id)?.quantity}`
+                            : ''
+                        }}
+                      </span>
                     </div>
 
-                    <div
-                      class="w-8 h-8 bg-[#00b14f] flex justify-center items-center rounded-full cursor-pointer"
-                      @click="
-                        addToCart({
-                          id: f._id,
-                          name: f.name,
-                          price: f.price,
-                        })
-                      "
-                    >
-                      <i class="fa-solid fa-plus text-white"></i>
+                    <div class="flex gap-2">
+                      <div
+                        v-if="foodIdsInOrder.includes(f._id)"
+                        class="w-8 h-8 bg-[#8a7501] flex justify-center items-center rounded-full cursor-pointer"
+                        @click="removeFromCart(f._id)"
+                      >
+                        <i class="fa-solid fa-minus text-white"></i>
+                      </div>
+
+                      <div
+                        class="w-8 h-8 bg-[#00b14f] flex justify-center items-center rounded-full cursor-pointer"
+                        @click="
+                          addToCart({
+                            id: f._id,
+                            name: f.name,
+                            price: f.price,
+                          })
+                        "
+                      >
+                        <i class="fa-solid fa-plus text-white"></i>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -163,6 +185,12 @@ const groupedFoods = ref<{ [key in (typeof CATEGORIES)[number]]: any[] }>({})
 
 const showDetail = ref(false)
 const { orders, addToCart, removeFromCart } = useOrderFood()
+
+const foodIdsInOrder = computed(() => orders.value.map((o) => o.id))
+
+const getFoodInOrder = (foodId: number) => {
+  return orders.value.find((o) => o.id === foodId)
+}
 
 watch(
   orders,
