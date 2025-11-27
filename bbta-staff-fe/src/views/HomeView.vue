@@ -47,8 +47,8 @@
         <div class="flex py-2 px-4">
           <el-button type="primary" @click="goServeSession(serve_ss._id)">Truy cập phiên</el-button>
 
-          <el-button type="primary" @click="goServeSession(serve_ss._id)"
-            >Hiển thị QR cho khách hàng</el-button
+          <el-button type="info" @click="showQRCode(serve_ss.code_login)"
+            >Hiển thị QR đăng nhập</el-button
           >
         </div>
       </div>
@@ -120,14 +120,43 @@
     </template>
   </el-dialog>
 
+  <el-dialog v-model="qrcodeShowRef" title="QR Code đăng nhập cho khách hàng">
+    <div class="flex justify-center p-4">
+      <qrcode-vue
+        :value="qrCodeValue"
+        :size="200"
+        :level="'M'"
+        :bg-color="'#ffffff'"
+        :fg-color="'#000000'"
+      />
+    </div>
+  </el-dialog>
+
   <el-drawer v-model="drawerSession" title="I am the title" :with-header="false">
-    <span>Hi there!</span>
+    <div class="h-full flex flex-col">
+      <div class="py-1 px-2 text-[14px] mb-2">
+        Phiên phục vụ: <span class="font-bold">{{ detailServeSession._id }}</span>
+      </div>
+      <el-tabs v-model="tableIdSession">
+        <template v-for="table in detailServeSession.table_ids" :key="table._id">
+          <el-tab-pane :label="table.name" :name="table._id"> </el-tab-pane>
+        </template>
+      </el-tabs>
+      <el-tabs v-model="state_order">
+        <el-tab-pane label="Đã đặt" name="ordered"> </el-tab-pane>
+        <el-tab-pane label="Đã hủy" name="canceled"> </el-tab-pane>
+        <el-tab-pane label="Đang chuẩn bị" name="preparing"> </el-tab-pane>
+        <el-tab-pane label="Đã phục vụ" name="served"> </el-tab-pane>
+      </el-tabs>
+    </div>
   </el-drawer>
 </template>
 
 <script setup lang="ts">
+import QrcodeVue from 'qrcode.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 
+import { URL_CLIENT } from '@/constant'
 import { api } from '@/plugin/axios'
 
 const tables = ref([])
@@ -184,11 +213,30 @@ onMounted(async () => {
   await getTables()
 })
 
+// QRcode
+const qrcodeShowRef = ref(false)
+const qrCodeValue = ref('')
+
+const showQRCode = (code_login: string) => {
+  const qrCodeUrl = `${URL_CLIENT}/code-login?code_login=${code_login}`
+  qrCodeValue.value = qrCodeUrl
+  qrcodeShowRef.value = true
+}
+
 // drawer
 const drawerSession = ref(false)
+const detailServeSession = ref({})
+const tableIdSession = ref()
+const state_order = ref('ordered')
+const order_session = ref([])
 
 const goServeSession = async (serve_session_id: string) => {
   const res = await api.get('/serve-session/' + serve_session_id)
+  detailServeSession.value = res.data.serve_session
+  tableIdSession.value = res.data.serve_session.table_ids[0]?._id
+  order_session.value = res.data.order_serve_session
+  state_order.value = 'ordered'
+
   drawerSession.value = true
 }
 </script>
