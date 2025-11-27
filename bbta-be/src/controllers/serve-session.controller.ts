@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import order_model from '../models/order.model';
 import serve_session_model from '../models/serve-session.model';
 
 const generateCodeLogin = (): string => {
@@ -33,12 +34,18 @@ const createServeSession = async (req: Request, res: Response) => {
 const getServeSessionById = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const serveSession = await serve_session_model.findById(id);
-    if (!serveSession) {
+    const serve_session = await serve_session_model.findById(id).populate('table_ids');
+    const order_serve_session = await order_model
+      .find({ serve_session_id: id })
+      .populate(
+        'table_order_id ordered.food_id preparing.food_id cancelled.food_id served.food_id ordered.table_id preparing.table_id cancelled.table_id served.table_id',
+      );
+
+    if (!serve_session) {
       return res.status(404).json({ message: 'Serve session not found' });
     }
 
-    return res.status(200).json(serveSession);
+    return res.status(200).json({ serve_session, order_serve_session });
   } catch (error) {
     return res.status(500).json({ message: 'Error retrieving serve session', error });
   }

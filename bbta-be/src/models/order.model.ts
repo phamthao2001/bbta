@@ -7,7 +7,6 @@ const order_schema = new Schema({
       food_id: { type: Schema.Types.ObjectId, ref: 'Food', required: true },
       quantity: { type: Number, required: true },
       price: { type: Number, required: true },
-      table_id: { type: Schema.Types.ObjectId, ref: 'Table', required: true },
     },
   ],
   preparing: [
@@ -39,6 +38,8 @@ const order_schema = new Schema({
       time_served: { type: Date, required: true },
     },
   ],
+
+  table_order_id: { type: Schema.Types.ObjectId, ref: 'Table', required: true },
   time_ordered: { type: Date, required: true, default: Date.now },
 });
 
