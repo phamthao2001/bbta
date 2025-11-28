@@ -170,6 +170,18 @@
         </div>
       </div>
     </template>
+
+    <van-popup v-model:show="showPicker" destroy-on-close round position="bottom">
+      <van-picker
+        :model-value="table_id_picker"
+        title="Chọn bàn đặt món"
+        cancel-button-text="Hủy"
+        confirm-button-text="Xác nhận"
+        :columns="pickers"
+        @cancel="showPicker = false"
+        @confirm="onConfirm"
+      />
+    </van-popup>
   </div>
 </template>
 
@@ -178,6 +190,7 @@ import { onMounted, ref, watch } from 'vue'
 import { computed } from 'vue'
 
 import { api } from '@/plugin/axios'
+import router from '@/router'
 import { useOrderFood } from '@/stores/useOrderFood'
 import { CATEGORIES, mapLabelCategory } from '@/utils/categories'
 
@@ -223,8 +236,7 @@ const onClickShowDetail = () => {
 }
 
 const orderFood = () => {
-  orders.value = []
-  showDetail.value = false
+  showPicker.value = true
 }
 
 const getFood = async () => {
@@ -245,8 +257,58 @@ const getFood = async () => {
   groupedFoods.value = f
 }
 
+const showPicker = ref(false)
+const tables = ref([])
+const table_id_picker = ref([])
+
+const pickers = computed(() => {
+  return tables.value.map((table) => ({
+    text: table.name,
+    value: table._id,
+  }))
+})
+
+const getSession = async () => {
+  const serveSession = localStorage.getItem('serve-session-id')
+  if (!serveSession) return
+  const res = await api.get(`/serve-session/${serveSession}`)
+
+  tables.value = res.data.serve_session.table_ids
+  table_id_picker.value = tables.value.length > 0 ? [tables.value[0]._id] : []
+}
+
+const onConfirm = async ({ selectedValues }) => {
+  const serve_session_id = localStorage.getItem('serve-session-id')
+
+  if (!serve_session_id) return
+
+  table_id_picker.value = selectedValues
+
+  if (table_id_picker.value.length === 0) return
+
+  const table_order_id = table_id_picker.value[0]
+  const ordered = orders.value.map((o) => ({
+    food_id: o.id,
+    quantity: o.quantity,
+    price: o.price,
+  }))
+
+  await api.post('/order/create', {
+    serve_session_id,
+    table_order_id,
+    ordered,
+  })
+
+  orders.value = []
+  showDetail.value = false
+  showPicker.value = false
+
+  router.push('/home')
+}
+
 onMounted(async () => {
   await getFood()
+  await getSession()
 })
 </script>
 

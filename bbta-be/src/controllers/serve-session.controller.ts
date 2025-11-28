@@ -38,7 +38,7 @@ const getServeSessionById = async (req: Request, res: Response) => {
     const order_serve_session = await order_model
       .find({ serve_session_id: id })
       .populate(
-        'table_order_id ordered.food_id preparing.food_id cancelled.food_id served.food_id ordered.table_id preparing.table_id cancelled.table_id served.table_id',
+        'table_order_id ordered.food_id preparing.food_id cancelled.food_id served.food_id preparing.table_id cancelled.table_id served.table_id',
       );
 
     if (!serve_session) {

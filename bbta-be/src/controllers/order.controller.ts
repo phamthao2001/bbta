@@ -4,7 +4,7 @@ import order_model from '../models/order.model';
 const getOrderById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const order = order_model.findById(id);
+  const order = await order_model.findById(id);
 
   if (!order) {
     return res.status(404).json({ message: 'Order not found' });
@@ -14,10 +14,98 @@ const getOrderById = async (req: Request, res: Response) => {
 };
 
 const createOrder = async (req: Request, res: Response) => {
-  const {} = req.body;
+  const { serve_session_id, table_order_id, ordered } = req.body;
+
+  const newOrder = new order_model({
+    serve_session_id,
+    table_order_id,
+    ordered,
+    time_ordered: new Date(),
+  });
+
+  try {
+    await newOrder.save();
+    return res.status(201).json(newOrder);
+  } catch (error) {
+    return res.status(500).json({ message: 'Error creating order', error });
+  }
+};
+
+const canceledFood = async (req: Request, res: Response) => {
+  const { items } = req.body;
+
+  try {
+    const processed: any[] = [];
+
+    for (const item of items) {
+      const { order_id, cancelItems } = item;
+
+      const order = await order_model.findById(order_id);
+      if (!order) {
+        return res.status(404).json({ message: `Order with id ${order_id} not found` });
+      }
+
+      const { ordered, table_order_id } = order;
+
+      const cancelled: Array<Record<string, unknown>> = [];
+      const preparing: Array<Record<string, unknown>> = [];
+
+      for (const ordItem of ordered) {
+        const cancelItem = cancelItems.find((ci: any) => ci.food_id === ordItem.food_id.toString());
+
+        if (cancelItem) {
+          const qtyToCancel = Number(cancelItem.quantity) || 0;
+          const remainingQty = (Number(item.quantity) || 0) - qtyToCancel;
+
+          cancelled.push({
+            food_id: ordItem.food_id,
+            quantity: qtyToCancel,
+            price: ordItem.price,
+            table_id: table_order_id,
+            time_cancelled: new Date(),
+          });
+
+          // only add preparing entry when there's still remaining quantity
+          if (remainingQty > 0) {
+            preparing.push({
+              food_id: ordItem.food_id,
+              quantity: remainingQty,
+              price: ordItem.price,
+              table_id: table_order_id,
+              time_started: new Date(),
+            });
+          }
+        } else {
+          preparing.push({
+            food_id: ordItem.food_id,
+            quantity: ordItem.quantity,
+            price: ordItem.price,
+            table_id: table_order_id,
+            time_started: new Date(),
+          });
+        }
+      }
+
+      // Use Mongoose document setters to safely replace subdocument arrays
+      // (avoids TypeScript typings issues — DocumentArray vs raw array)
+      order.set('ordered', []);
+      order.set('cancelled', cancelled);
+      order.set('preparing', preparing);
+
+      await order.save();
+
+      processed.push(order);
+    }
+
+    // processed contains updated order documents for each item entry processed
+    return res.status(200).json({ processed });
+  } catch (error) {
+    return res.status(500).json({ message: 'Error canceling food', error });
+  }
 };
 
 export const order_controller = {
   createOrder,
   getOrderById,
+  canceledFood,
 };

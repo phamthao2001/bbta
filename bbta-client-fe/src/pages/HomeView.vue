@@ -78,13 +78,10 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 function orderNow(): void {
-  // Navigate to ordering flow / menu page — adapt route name if you have one
-  router.push({ name: 'order-food' })
+  router.push('/order-food')
 }
 
 function payNow(): void {
-  // Typically this will open payment flow or go to checkout
-
   alert('Chức năng thanh toán sẽ mở (chưa triển khai).')
 }
 </script>
