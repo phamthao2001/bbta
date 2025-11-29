@@ -51,7 +51,55 @@ const getServeSessionById = async (req: Request, res: Response) => {
   }
 };
 
+const switchTable = async (req: Request, res: Response) => {
+  const { serve_session_id, table_id, target_table_id } = req.body;
+
+  try {
+    const ss = await serve_session_model.findById(serve_session_id);
+
+    if (!ss) {
+      return res.status(404).json({ message: 'Serve session not found' });
+    }
+
+    const { table_ids } = ss;
+
+    if (!table_ids.includes(table_id)) {
+      return res.status(404).json({ message: 'table_id not includes in serve session' });
+    }
+
+    const indexTableId = table_ids.indexOf(table_id);
+    table_ids[indexTableId] = target_table_id;
+
+    ss.set('table_ids', table_ids);
+    await ss.save();
+
+    const orders = await order_model.find({
+      serve_session_id: serve_session_id,
+      table_order_id: table_id,
+    });
+
+    for (const order of orders) {
+      const { preparing } = order;
+
+      const newPreparing = preparing.map((i) => ({
+        ...i,
+        table_id: target_table_id,
+      }));
+
+      order.set('table_order_id', target_table_id);
+      order.set('preparing', newPreparing);
+
+      await order.save();
+    }
+
+    return res.status(200).json({ ss, table_ids, indexTableId, orders });
+  } catch (e) {
+    return res.status(500).json({ message: 'Error retrieving serve session', e });
+  }
+};
+
 export const serve_session_controller = {
   createServeSession,
   getServeSessionById,
+  switchTable,
 };

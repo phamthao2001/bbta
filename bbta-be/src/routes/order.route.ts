@@ -9,4 +9,6 @@ route.post('/order/create', order_controller.createOrder);
 
 route.post('/order/cancel-food', order_controller.canceledFood);
 
+route.post('/order/serve-food', order_controller.serveFood);
+
 export const order_route = route;

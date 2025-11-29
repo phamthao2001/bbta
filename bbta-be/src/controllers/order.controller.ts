@@ -55,7 +55,7 @@ const canceledFood = async (req: Request, res: Response) => {
 
         if (cancelItem) {
           const qtyToCancel = Number(cancelItem.quantity) || 0;
-          const remainingQty = (Number(item.quantity) || 0) - qtyToCancel;
+          const remainingQty = (Number(ordItem.quantity) || 0) - qtyToCancel;
 
           cancelled.push({
             food_id: ordItem.food_id,
@@ -104,8 +104,65 @@ const canceledFood = async (req: Request, res: Response) => {
   }
 };
 
+const serveFood = async (req: Request, res: Response) => {
+  const { items } = req.body;
+
+  try {
+    const processed: any[] = [];
+
+    for (const item of items) {
+      const { order_id, serveItems } = item;
+
+      const order = await order_model.findById(order_id);
+      if (!order) {
+        return res.status(404).json({ message: `Order with id ${order_id} not found` });
+      }
+
+      const { preparing, served = [] } = order;
+
+      const addServed = [];
+      for (const serve of serveItems) {
+        const pre = preparing.find((i) => i.food_id.toString() === serve.food_id);
+        const serveQty = Number(serve.quantity);
+
+        console.log(preparing);
+        if (pre) {
+          const preQty = Number(pre.quantity);
+          const remainingQty = (Number(preQty) || 0) - serveQty;
+
+          pre.quantity = remainingQty > 0 ? remainingQty : 0;
+
+          addServed.push({
+            food_id: pre.food_id,
+            quantity: serveQty,
+            price: pre.price,
+            table_id: pre.table_id,
+            time_served: Date.now(),
+          });
+        }
+      }
+      const newPreparing = preparing.filter((i) => i.quantity > 0);
+
+      // Use Mongoose document setters to safely replace subdocument arrays
+      // (avoids TypeScript typings issues — DocumentArray vs raw array)
+      order.set('preparing', newPreparing);
+      order.set('served', [...served, ...addServed]);
+
+      await order.save();
+
+      processed.push({ order, newPreparing, addServed });
+    }
+
+    // processed contains updated order documents for each item entry processed
+    return res.status(200).json({ processed });
+  } catch (error) {
+    return res.status(500).json({ message: 'Error canceling food', error });
+  }
+};
+
 export const order_controller = {
   createOrder,
   getOrderById,
   canceledFood,
+  serveFood,
 };

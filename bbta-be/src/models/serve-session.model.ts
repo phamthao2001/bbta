@@ -12,6 +12,12 @@ const serve_session_schema = new Schema({
     },
   ],
 
+  bill_attach: [
+    {
+      bill_id: { type: Schema.Types.ObjectId, ref: 'Bill', required: true },
+      isPayed: { type: Boolean, default: false },
+    },
+  ],
   started_at: { type: Date, required: true, default: Date.now },
   ended_at: { type: Date },
 });
