@@ -113,10 +113,12 @@
             <div class="flex justify-center">Quét QR bên dưới để chuyển khoản cho cửa hàng</div>
             <div class="flex flex-col justify-center">
               <div class="flex justify-center">
-                <img class="w-[200px] h-[200px]" src="" alt="" />
+                <img class="w-[200px] h-[200px]" :src="qrURL" alt="" />
               </div>
               <div class="flex justify-end mt-4">
-                <el-button size="large" type="primary">Xác nhận đã thanh toán</el-button>
+                <el-button @click="confirmSession" size="large" type="primary"
+                  >Xác nhận đã thanh toán</el-button
+                >
               </div>
             </div>
           </template>
@@ -152,6 +154,10 @@ const sum_price = computed(() => {
   }
 
   return total
+})
+
+const qrURL = computed(() => {
+  return `https://img.vietqr.io/image/vpbank-2746520062001-compact2.jpg?amount=${sum_price.value}&addInfo={#user}&accountName=bbta`
 })
 
 const getAllOrder = async () => {
@@ -210,6 +216,8 @@ const updateListServe = async () => {
 onMounted(async () => {
   await getAllOrder()
 })
+
+const confirmSession = async () => {}
 </script>
 
 <style lang="scss"></style>
