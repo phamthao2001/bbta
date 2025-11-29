@@ -14,6 +14,11 @@ const router = createRouter({
           name: 'home',
           component: () => import('@/views/HomeView.vue'),
         },
+        {
+          path: 'thanh-toan/:serve_session_id',
+          name: 'thanh-toan',
+          component: () => import('@/views/PaymentView.vue'),
+        },
       ],
     },
   ],

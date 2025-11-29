@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import order_model from '../models/order.model';
+import serve_session_model from '../models/serve-session.model';
 
 const getOrderById = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -118,14 +119,13 @@ const serveFood = async (req: Request, res: Response) => {
         return res.status(404).json({ message: `Order with id ${order_id} not found` });
       }
 
-      const { preparing, served = [] } = order;
+      const { preparing, served = [], serve_session_id } = order;
 
       const addServed = [];
       for (const serve of serveItems) {
         const pre = preparing.find((i) => i.food_id.toString() === serve.food_id);
         const serveQty = Number(serve.quantity);
 
-        console.log(preparing);
         if (pre) {
           const preQty = Number(pre.quantity);
           const remainingQty = (Number(preQty) || 0) - serveQty;
@@ -149,6 +149,16 @@ const serveFood = async (req: Request, res: Response) => {
       order.set('served', [...served, ...addServed]);
 
       await order.save();
+
+      if (addServed.length) {
+        const serve_ss = await serve_session_model.findById(serve_session_id);
+
+        if (serve_ss) {
+          serve_ss.set('is_updated_served', false);
+
+          await serve_ss.save();
+        }
+      }
 
       processed.push({ order, newPreparing, addServed });
     }

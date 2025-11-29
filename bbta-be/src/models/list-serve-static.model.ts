@@ -1,18 +1,16 @@
 import { model, Schema } from 'mongoose';
 
-const bill_schema = new Schema({
+const list_serve_static_schema = new Schema({
   serve_session_id: { type: Schema.Types.ObjectId, ref: 'ServeSession', required: true },
-  type: { type: String },
-  items: [
+  list_serve: [
     {
       food_id: { type: Schema.Types.ObjectId, ref: 'Food', required: true },
       quantity: { type: Number, required: true },
       price: { type: Number, required: true },
     },
   ],
-  total_price: { type: Number, required: true },
 });
 
-const bill_model = model('Bill', bill_schema);
+const list_serve_static_model = model('ListServe', list_serve_static_schema);
 
-export default bill_model;
+export default list_serve_static_model;

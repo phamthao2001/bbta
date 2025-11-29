@@ -12,10 +12,20 @@ const serve_session_schema = new Schema({
     },
   ],
 
-  bill_attach: [
+  is_updated_served: {
+    type: Boolean,
+    default: false,
+  },
+  type_bill: { type: String },
+  bills: [
     {
-      bill_id: { type: Schema.Types.ObjectId, ref: 'Bill', required: true },
-      isPayed: { type: Boolean, default: false },
+      items: [
+        {
+          food_id: { type: Schema.Types.ObjectId, ref: 'Food', required: true },
+          quantity: { type: Number, required: true },
+          price: { type: Number, required: true },
+        },
+      ],
     },
   ],
   started_at: { type: Date, required: true, default: Date.now },

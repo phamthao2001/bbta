@@ -34,7 +34,9 @@ const createServeSession = async (req: Request, res: Response) => {
 const getServeSessionById = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const serve_session = await serve_session_model.findById(id).populate('table_ids');
+    const serve_session = await serve_session_model
+      .findById(id)
+      .populate('table_ids bills.items.food_id');
     const order_serve_session = await order_model
       .find({ serve_session_id: id })
       .populate(
@@ -98,8 +100,31 @@ const switchTable = async (req: Request, res: Response) => {
   }
 };
 
+const genBill = async (req: Request, res: Response) => {
+  const { type, ss, bills } = req.body;
+
+  try {
+    const serve_ss = await serve_session_model.findById(ss);
+
+    if (!serve_ss) {
+      return res.status(404).json({ message: 'Serve session not found' });
+    }
+
+    serve_ss.set('is_updated_served', true);
+    serve_ss.set('type_bill', type);
+    serve_ss.set('bills', bills);
+
+    await serve_ss.save();
+
+    return res.status(200).json({ serve_ss });
+  } catch (e) {
+    return res.status(500).json({ message: 'Error retrieving serve session', e });
+  }
+};
+
 export const serve_session_controller = {
   createServeSession,
   getServeSessionById,
   switchTable,
+  genBill,
 };
