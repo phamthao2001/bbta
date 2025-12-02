@@ -1,6 +1,7 @@
-import { hash } from 'bcrypt';
+import { compare, hash } from 'bcrypt';
 import { Request, Response } from 'express';
 import staff_model from '../models/staff.model';
+import { genToken_utils } from '../utils/gen-token';
 
 const getAll = async (req: Request, res: Response) => {
   try {
@@ -62,4 +63,22 @@ const deleteStaff = async (req: Request, res: Response) => {
   }
 };
 
-export const staff_controller = { getAll, addStaff, updateStaff, deleteStaff };
+const login = async (req: Request, res: Response) => {
+  const { username, password } = req.body;
+  const admin = await staff_model.findOne({ username, is_deleted: { $ne: true } });
+  if (!admin) {
+    return res.status(401).json({ message: 'Invalid username' });
+  }
+
+  // compare password
+  const isPasswordValid = await compare(password, admin.password);
+  if (!isPasswordValid) {
+    return res.status(401).json({ message: 'Invalid password' });
+  }
+
+  return res
+    .status(200)
+    .json({ message: 'Login successful', token: genToken_utils.genToken(admin._id.toString()) });
+};
+
+export const staff_controller = { getAll, addStaff, updateStaff, deleteStaff, login };

@@ -2,8 +2,8 @@
   <div class="min-h-screen flex items-center justify-center bg-slate-100">
     <div class="w-full max-w-md bg-white shadow-lg rounded-xl px-8 py-10 border border-slate-200">
       <div class="mb-8 text-center">
-        <h1 class="text-2xl font-semibold text-slate-900">BBTA Admin</h1>
-        <p class="mt-1 text-sm text-slate-500">Đăng nhập để quản lý hệ thống</p>
+        <h1 class="text-2xl font-semibold text-slate-900">BBTA Staff</h1>
+        <p class="mt-1 text-sm text-slate-500">Đăng nhập để phục vụ khách hàng</p>
       </div>
 
       <form @submit.prevent="onSubmit" class="space-y-5">
@@ -57,7 +57,7 @@ const onSubmit = async () => {
   submitting.value = true
 
   try {
-    const res = await api.post('/admin/login', {
+    const res = await api.post('/staff/login', {
       ...form,
     })
 
@@ -65,7 +65,7 @@ const onSubmit = async () => {
 
     localStorage.setItem('bbta_staff_token', token)
 
-    router.push({ name: 'home' })
+    await router.push({ name: 'home' })
   } catch (error) {
     errorMessage.value = 'Login failed. Please check your credentials.'
   } finally {
