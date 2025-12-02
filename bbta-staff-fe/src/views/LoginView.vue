@@ -63,9 +63,9 @@ const onSubmit = async () => {
 
     const token = res.data.token
 
-    localStorage.setItem('bbta_admin_token', token)
+    localStorage.setItem('bbta_staff_token', token)
 
-    router.push({ name: 'tables' })
+    router.push({ name: 'home' })
   } catch (error) {
     errorMessage.value = 'Login failed. Please check your credentials.'
   } finally {

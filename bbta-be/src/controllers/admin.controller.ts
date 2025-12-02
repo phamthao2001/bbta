@@ -43,7 +43,7 @@ const deleteAdmin = async (req: Request, res: Response) => {
 
 const login = async (req: Request, res: Response) => {
   const { username, password } = req.body;
-  const admin = await admin_model.findOne({ username, password });
+  const admin = await admin_model.findOne({ username });
   if (!admin) {
     return res.status(401).json({ message: 'Invalid username' });
   }

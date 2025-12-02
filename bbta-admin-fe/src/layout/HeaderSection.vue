@@ -22,37 +22,13 @@
       </button>
 
       <div class="hidden md:flex items-center gap-3">
-        <div class="text-lg font-semibold">Admin</div>
-        <div class="text-sm text-gray-500">Dashboard</div>
+        <div class="text-lg font-semibold">BBTA Admin</div>
       </div>
     </div>
 
     <!-- Middle: search (collapses on small screens) -->
     <div class="flex-1 max-w-xl mx-4">
-      <div class="relative">
-        <input
-          v-model="query"
-          type="search"
-          placeholder="Search..."
-          class="w-full bg-gray-100 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-300"
-        />
-        <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1111.5 4.5a7.5 7.5 0 015.15 12.15z"
-            />
-          </svg>
-        </div>
-      </div>
+      <div class="relative"></div>
     </div>
 
     <!-- Right: notifications + user -->
@@ -92,9 +68,6 @@
           v-if="menuOpen"
           class="absolute right-0 mt-2 w-48 bg-white rounded shadow-lg py-2 z-50"
         >
-          <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Profile</a>
-          <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Settings</a>
-          <div class="border-t my-1"></div>
           <button
             @click="logout"
             class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
@@ -109,6 +82,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+
+import router from '@/router'
 
 const emit = defineEmits<{
   (e: 'toggle-sidebar'): void
@@ -126,10 +101,10 @@ function toggleMenu() {
   menuOpen.value = !menuOpen.value
 }
 
-function logout() {
-  // placeholder: wire to auth/logout flow
-  console.log('logout')
-  menuOpen.value = false
+const logout = async () => {
+  localStorage.removeItem('bbta_admin_token')
+
+  await router.push('/login')
 }
 </script>
 

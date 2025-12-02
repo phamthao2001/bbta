@@ -31,7 +31,9 @@
 
                   <div class="flex justify-end mt-4">
                     <el-button size="small" type="warning">Cập nhật</el-button>
-                    <el-button size="small" type="danger">Xóa</el-button>
+                    <el-button size="small" type="danger" @click="clickDelete(t._id)"
+                      >Xóa</el-button
+                    >
                   </div>
                 </div>
               </div>
@@ -40,36 +42,45 @@
         </template>
       </el-row>
     </div>
-  </div>
 
-  <el-dialog v-model="openDialog" title="Thêm bàn" width="600">
-    <div class="flex justify-center p-2">
-      <el-form label-width="auto" style="width: 400px">
-        <el-form-item label="Tên bàn">
-          <el-input v-model="formTable.name" />
-        </el-form-item>
+    <el-dialog v-model="openDialog" title="Thêm bàn" width="600">
+      <div class="flex justify-center p-2">
+        <el-form label-width="auto" style="width: 400px">
+          <el-form-item label="Tên bàn">
+            <el-input v-model="formTable.name" />
+          </el-form-item>
 
-        <el-form-item label="Số lượng ghế">
-          <el-input-number v-model="formTable.capacity" controls-position="right" />
-        </el-form-item>
+          <el-form-item label="Số lượng ghế">
+            <el-input-number v-model="formTable.capacity" controls-position="right" />
+          </el-form-item>
 
-        <el-form-item label="Mô tả">
-          <el-input
-            v-model="formTable.description"
-            :autosize="{ minRows: 4, maxRows: 4 }"
-            :rows="4"
-            type="textarea"
-          />
-        </el-form-item>
-      </el-form>
-    </div>
-    <template #footer>
-      <div class="dialog-footer">
-        <el-button @click="closeDialog()">Hủy</el-button>
-        <el-button type="primary" @click="addTable()">Thêm</el-button>
+          <el-form-item label="Mô tả">
+            <el-input
+              v-model="formTable.description"
+              :autosize="{ minRows: 4, maxRows: 4 }"
+              :rows="4"
+              type="textarea"
+            />
+          </el-form-item>
+        </el-form>
       </div>
-    </template>
-  </el-dialog>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="closeDialog()">Hủy</el-button>
+          <el-button type="primary" @click="addTable()">Thêm</el-button>
+        </div>
+      </template>
+    </el-dialog>
+
+    <el-dialog v-model="dialogDelete" title="Xác nhận xóa">
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="dialogDelete = false">Hủy</el-button>
+          <el-button type="danger" @click="deleteApi()">Xác nhận</el-button>
+        </div>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -119,6 +130,22 @@ const getTables = async () => {
 onMounted(async () => {
   await getTables()
 })
+
+const dialogDelete = ref(false)
+const deleteId = ref(null)
+
+const clickDelete = (id) => {
+  dialogDelete.value = true
+  deleteId.value = id
+}
+
+const deleteApi = async () => {
+  await api.delete(`/admin/delete-table/${deleteId.value}`)
+
+  await getTables()
+  deleteId.value = null
+  dialogDelete.value = false
+}
 </script>
 
 <style lang="scss" scoped>

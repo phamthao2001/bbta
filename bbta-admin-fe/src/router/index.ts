@@ -37,15 +37,15 @@ const router = createRouter({
   ],
 })
 
-// router.beforeEach((to, from, next) => {
-//   const token = localStorage.getItem('bbta_admin_token')
-//   if (to.path === '/login' && token) {
-//     next('/tables')
-//   } else if (to.path !== '/login' && !token) {
-//     next('/login')
-//   } else {
-//     next()
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('bbta_admin_token')
+  if (to.path === '/login' && token) {
+    next('/tables')
+  } else if (to.path !== '/login' && !token) {
+    next('/login')
+  } else {
+    next()
+  }
+})
 
 export default router

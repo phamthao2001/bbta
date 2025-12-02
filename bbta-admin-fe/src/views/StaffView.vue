@@ -82,10 +82,10 @@
       </template>
     </el-dialog>
 
-    <el-dialog v-model="deleteAdmin" title="Xác nhận xóa">
+    <el-dialog v-model="deleteDialog" title="Xác nhận xóa">
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="deleteAdmin = false">Hủy</el-button>
+          <el-button @click="deleteDialog = false">Hủy</el-button>
           <el-button type="danger" @click="deleteApi()">Xác nhận</el-button>
         </div>
       </template>
@@ -187,20 +187,20 @@ const addAdmin = async () => {
   closeDialog()
 }
 
-const deleteAdmin = ref(false)
-const deleteAdminId = ref(null)
+const deleteDialog = ref(false)
+const deleteId = ref(null)
 
 const clickDelete = (id) => {
-  deleteAdminId.value = id
-  deleteAdmin.value = true
+  deleteId.value = id
+  deleteDialog.value = true
 }
 
 const deleteApi = async () => {
-  await api.delete(`/admin/${deleteAdminId.value}`)
+  await api.delete(`/staff/${deleteId.value}`)
 
   await getStaff()
-  deleteAdminId.value = null
-  deleteAdmin.value = false
+  deleteId.value = null
+  deleteDialog.value = false
 }
 
 const getStaff = async () => {
