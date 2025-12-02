@@ -1,10 +1,10 @@
 <template>
   <div class="p-4">
     <div class="flex items-center justify-between">
-      <h2 class="text-2xl font-bold mb-4">Danh sách nhân viên</h2>
+      <h2 class="text-2xl font-bold mb-4">Danh sách người quản lý</h2>
 
-      <el-button type="primary" @click="openDialogAddStaff()"
-        >Thêm nhân viên<i class="fa-solid fa-plus ml-1"></i
+      <el-button type="primary" @click="openDialogAddAdmin()"
+        >Thêm người quản lý<i class="fa-solid fa-plus ml-1"></i
       ></el-button>
     </div>
 
@@ -14,16 +14,6 @@
         <el-table-column prop="name" label="Tên" />
         <el-table-column prop="email" label="Email"> </el-table-column>
         <el-table-column prop="phone" label="Số điện thoại"> </el-table-column>
-        <el-table-column prop="salary" label="Lương tháng">
-          <template #default="scope">
-            <span>{{ new Intl.NumberFormat('vi-VN').format(scope.row.salary) }} đ</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="sex" label="Giới tính">
-          <template #default="scope">
-            <span>{{ { man: 'Nam', woman: 'Nữ' }[scope.row.sex] }}</span>
-          </template>
-        </el-table-column>
         <el-table-column label="Hành động">
           <template #default="scope">
             <el-button type="danger" @click="clickDelete(scope.row._id)">Xóa</el-button>
@@ -35,41 +25,29 @@
     <el-dialog v-model="dialogAddAdmin" title="Thêm người quản lý" width="600">
       <div class="flex p-2 gap-4">
         <div class="flex-1">
-          <el-form label-width="auto" :model="form" :rules="rules" ref="formRef">
+          <el-form label-width="auto" :model="formAdmin" :rules="rules" ref="formRef">
             <el-form-item label="Tên đăng nhập" prop="username">
-              <el-input v-model="form.username" />
+              <el-input v-model="formAdmin.username" />
             </el-form-item>
 
             <el-form-item label="Mật khẩu" prop="password">
-              <el-input v-model="form.password" type="password" show-password></el-input>
+              <el-input v-model="formAdmin.password" type="password" show-password></el-input>
             </el-form-item>
 
             <el-form-item label="Xác nhận mật khẩu" prop="confirmPassword">
-              <el-input v-model="form.confirmPassword" type="password" show-password />
+              <el-input v-model="formAdmin.confirmPassword" type="password" show-password />
             </el-form-item>
 
             <el-form-item label="Tên">
-              <el-input v-model="form.name" />
+              <el-input v-model="formAdmin.name" />
             </el-form-item>
 
             <el-form-item label="Email" prop="email">
-              <el-input v-model="form.email" />
+              <el-input v-model="formAdmin.email" />
             </el-form-item>
 
             <el-form-item label="Số điện thoại" prop="phone">
-              <el-input v-model="form.phone" />
-            </el-form-item>
-
-            <el-form-item label="Lương tháng" prop="salary">
-              <el-input v-model="form.salary" type="number" />
-            </el-form-item>
-
-            <el-form-item label="Giới tính" prop="sex">
-              <el-select v-model="form.sex">
-                <el-option key="man" label="Nam" value="man" />
-
-                <el-option key="woman" label="Nữ" value="woman" />
-              </el-select>
+              <el-input v-model="formAdmin.phone" />
             </el-form-item>
           </el-form>
         </div>
@@ -103,28 +81,24 @@ import { api } from '@/plugin/axios'
 const formRef = ref<InstanceType<typeof ElForm>>()
 const admins = ref([])
 
-const form = reactive({
+const formAdmin = reactive({
   username: '',
   name: '',
   email: '',
   phone: '',
-  salary: 0,
-  sex: 'man',
   password: '',
   confirmPassword: '',
 })
 const dialogAddAdmin = ref(false)
 
-const openDialogAddStaff = () => {
+const openDialogAddAdmin = () => {
   dialogAddAdmin.value = true
-  form.username = ''
-  form.name = ''
-  form.email = ''
-  form.phone = ''
-  form.salary = 0
-  form.sex = 'man'
-  form.password = ''
-  form.confirmPassword = ''
+  formAdmin.username = ''
+  formAdmin.name = ''
+  formAdmin.email = ''
+  formAdmin.phone = ''
+  formAdmin.password = ''
+  formAdmin.confirmPassword = ''
 }
 
 const closeDialog = () => {
@@ -169,20 +143,18 @@ const addAdmin = async () => {
     return
   }
 
-  if (form.password !== form.confirmPassword) {
+  if (formAdmin.password !== formAdmin.confirmPassword) {
     ElMessage.error('Mật khẩu và xác nhận mật khẩu không khớp')
     return
   }
-  await api.post('/staff', {
-    username: form.username,
-    name: form.name,
-    email: form.email,
-    phone: form.phone,
-    salary: form.salary,
-    sex: form.sex,
-    password: form.password,
+  await api.post('/admin', {
+    username: formAdmin.username,
+    name: formAdmin.name,
+    email: formAdmin.email,
+    phone: formAdmin.phone,
+    password: formAdmin.password,
   })
-  await getStaff()
+  await getAdmin()
   formRef.value?.resetFields()
   closeDialog()
 }
@@ -198,18 +170,18 @@ const clickDelete = (id) => {
 const deleteApi = async () => {
   await api.delete(`/admin/${deleteAdminId.value}`)
 
-  await getStaff()
+  await getAdmin()
   deleteAdminId.value = null
   deleteAdmin.value = false
 }
 
-const getStaff = async () => {
-  const res = await api.get('/staff')
+const getAdmin = async () => {
+  const res = await api.get('/admin')
   admins.value = res.data
 }
 
-onMounted(async () => {
-  await getStaff()
+onMounted(() => {
+  getAdmin()
 })
 </script>
 

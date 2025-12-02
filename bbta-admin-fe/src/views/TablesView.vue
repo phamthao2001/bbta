@@ -111,7 +111,7 @@ const closeDialog = () => {
 }
 
 const getTables = async () => {
-  const res = await api.get('/table')
+  const res = await api.get('/admin/get-table')
 
   tables.value = res.data
 }

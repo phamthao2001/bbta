@@ -35,61 +35,61 @@
         <el-table-column prop="description" label="Mô tả" />
       </el-table>
     </div>
-  </div>
 
-  <el-dialog v-model="openDialog" title="Thêm món ăn" width="600">
-    <div class="flex p-2 gap-4">
-      <div class="w-[100px] h-[100px]">
-        <div
-          class="h-full w-full border-dashed border-2 border-gray-300 rounded flex justify-center items-center cursor-pointer"
-          @click="inputRef?.click()"
-        >
-          <div class="w-[100px] h-[100px] flex justify-center items-center">
-            <img v-if="fileContent" :src="fileContent" alt="" />
-            <i v-else class="fa-solid fa-plus"></i>
+    <el-dialog v-model="openDialog" title="Thêm món ăn" width="600">
+      <div class="flex p-2 gap-4">
+        <div class="w-[100px] h-[100px]">
+          <div
+            class="h-full w-full border-dashed border-2 border-gray-300 rounded flex justify-center items-center cursor-pointer"
+            @click="inputRef?.click()"
+          >
+            <div class="w-[100px] h-[100px] flex justify-center items-center">
+              <img v-if="fileContent" :src="fileContent" alt="" />
+              <i v-else class="fa-solid fa-plus"></i>
+            </div>
+            <input ref="inputRef" hidden type="file" @change="onChangeFile" />
           </div>
-          <input ref="inputRef" hidden type="file" @change="onChangeFile" />
+        </div>
+        <div class="flex-1">
+          <el-form label-width="auto">
+            <el-form-item label="Tên món ăn">
+              <el-input v-model="formFood.name" />
+            </el-form-item>
+
+            <el-form-item label="Danh mục">
+              <el-select v-model="formFood.category">
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="Giá">
+              <el-input-number v-model="formFood.price" controls-position="right" />
+            </el-form-item>
+
+            <el-form-item label="Mô tả">
+              <el-input
+                v-model="formFood.description"
+                :autosize="{ minRows: 4, maxRows: 4 }"
+                :rows="4"
+                type="textarea"
+              />
+            </el-form-item>
+          </el-form>
         </div>
       </div>
-      <div class="flex-1">
-        <el-form label-width="auto">
-          <el-form-item label="Tên món ăn">
-            <el-input v-model="formFood.name" />
-          </el-form-item>
-
-          <el-form-item label="Danh mục">
-            <el-select v-model="formFood.category">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-
-          <el-form-item label="Giá">
-            <el-input-number v-model="formFood.price" controls-position="right" />
-          </el-form-item>
-
-          <el-form-item label="Mô tả">
-            <el-input
-              v-model="formFood.description"
-              :autosize="{ minRows: 4, maxRows: 4 }"
-              :rows="4"
-              type="textarea"
-            />
-          </el-form-item>
-        </el-form>
-      </div>
-    </div>
-    <template #footer>
-      <div class="dialog-footer">
-        <el-button @click="closeDialog()">Hủy</el-button>
-        <el-button type="primary" @click="createFood()">Thêm</el-button>
-      </div>
-    </template>
-  </el-dialog>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="closeDialog()">Hủy</el-button>
+          <el-button type="primary" @click="createFood()">Thêm</el-button>
+        </div>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <script setup lang="ts">

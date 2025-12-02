@@ -1,10 +1,14 @@
 import { Router } from 'express';
-import { table_controller } from '../controllers/table.controller';
+import { staff_controller } from '../controllers/staff.controller';
 
 const route = Router();
 
-route.get('/staff', table_controller.getAll);
+route.get('/staff', staff_controller.getAll);
 
-route.post('/staff', table_controller.addTable);
+route.post('/staff', staff_controller.addStaff);
+
+route.put('/staff/:id', staff_controller.updateStaff);
+
+route.delete('/staff/:id', staff_controller.deleteStaff);
 
 export const staff_route = route;

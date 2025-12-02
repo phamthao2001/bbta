@@ -1,18 +1,14 @@
 import { model, Schema } from 'mongoose';
 
-const staff_schema = new Schema({
+const admin_schema = new Schema({
   username: { type: String, required: true, unique: true },
-  name: { type: String },
+  name: { type: String, required: true },
   email: { type: String },
   phone: { type: String },
-  sex: { type: String, default: 'man' },
-  salary: { type: Number },
-
-  // private
   password: { type: String, required: true },
   is_deleted: { type: Boolean, default: false },
 });
 
-const staff_model = model('Staff', staff_schema);
+const admin_model = model('Admin', admin_schema);
 
-export default staff_model;
+export default admin_model;

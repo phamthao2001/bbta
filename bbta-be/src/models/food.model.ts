@@ -6,6 +6,7 @@ const food_schema = new Schema({
   category: { type: String, required: true },
   image_url: { type: String },
   description: { type: String },
+  is_deleted: { type: Boolean, default: false },
 });
 
 const food_model = model('Food', food_schema);

@@ -1,3 +1,4 @@
+import { admin_route } from './admin.route';
 import { auth_route } from './auth.route';
 import { food_route } from './food.route';
 import { order_route } from './order.route';
@@ -12,4 +13,5 @@ export const all_routes = [
   order_route,
   serve_session_route,
   auth_route,
+  admin_route,
 ];
