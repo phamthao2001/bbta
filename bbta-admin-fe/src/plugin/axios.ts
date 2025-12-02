@@ -1,6 +1,8 @@
 import type { AxiosInstance } from 'axios'
 import axios from 'axios'
 
+import router from '@/router'
+
 const baseURL = 'http://localhost:3000/api'
 
 export const api: AxiosInstance = axios.create({
@@ -13,43 +15,36 @@ export const api: AxiosInstance = axios.create({
 })
 
 // request interceptor — attach Authorization header
-// api.interceptors.request.use(
-//   (config: AxiosRequestConfig): AxiosRequestConfig => {
-//     try {
-//       const token = localStorage.getItem('bbta_token')
-//       if (token && config.headers) {
-//         config.headers.Authorization = `Bearer ${token}`
-//       }
-//     } catch (_e) {
-//       // ignore localStorage errors
-//     }
-//     return config
-//   },
-//   (error) => Promise.reject(error),
-// )
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('bbta_admin_token')
+    if (token && config.headers) {
+      config.headers.authorization = `${token}`
+    }
 
-// // response interceptor — normalize and handle 401
-// api.interceptors.response.use(
-//   (res: AxiosResponse) => res,
-//   (err: AxiosError) => {
-//     const status = err.response?.status
+    return config
+  },
+  (error) => Promise.reject(error),
+)
 
-//     if (status === 401) {
-//       // best-effort cleanup (do not force navigation)
-//       try {
-//         localStorage.removeItem('bbta_token')
-//       } catch (_e) {
-//         // noop
-//       }
-//     }
+// response interceptor — normalize and handle 401
+api.interceptors.response.use(
+  (res) => res,
+  async (err) => {
+    const status = err.response?.status
 
-//     const normalized = {
-//       status: status ?? 0,
-//       message: err.message,
-//       data: err.response?.data ?? null,
-//       originalError: err,
-//     }
+    if (status === 401) {
+      localStorage.removeItem('bbta_admin_token')
+      await router.push('/login')
+    }
 
-//     return Promise.reject(normalized)
-//   },
-// )
+    const normalized = {
+      status: status ?? 0,
+      message: err.message,
+      data: err.response?.data ?? null,
+      originalError: err,
+    }
+
+    return Promise.reject(normalized)
+  },
+)
