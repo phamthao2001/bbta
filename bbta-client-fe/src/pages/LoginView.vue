@@ -90,15 +90,17 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { api } from '@/plugin/axios'
+import { useAuth } from '@/stores/useAuth'
 
 const router = useRouter()
 
 const phone = ref('')
 const password = ref('')
-const remember = ref(true)
+const remember = ref(false)
 const showPassword = ref(false)
 const loading = ref(false)
 const error = ref<string | null>(null)
+const { isLoginedIn } = useAuth()
 
 const phoneError = computed(() => {
   if (!phone.value) return null
@@ -124,7 +126,10 @@ async function submit() {
 
   try {
     // call the API login endpoint — adjust path to match your backend
-    const res = await api.post('/auth/login', { phone: phone.value, password: password.value })
+    const res = await api.post('/customer/login', {
+      phone: '0' + phone.value,
+      password: password.value,
+    })
     const token = res?.data?.token
     if (token) {
       try {
@@ -132,7 +137,8 @@ async function submit() {
       } catch {
         // ignore storage errors
       }
-      router.push({ name: 'Home' }).catch(() => null)
+      router.push('/home').catch(() => null)
+      isLoginedIn.value = true
     } else {
       error.value = res?.data?.message ?? 'Đăng nhập không thành công'
     }

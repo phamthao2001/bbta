@@ -13,6 +13,11 @@ const router = createRouter({
       component: () => import('@/layout/MainLayout.vue'),
       children: [
         {
+          path: 'dashboard',
+          name: 'dashboard',
+          component: () => import('@/views/DashboardView.vue'),
+        },
+        {
           path: 'tables',
           name: 'tables',
           component: () => import('@/views/TablesView.vue'),
@@ -31,6 +36,11 @@ const router = createRouter({
           path: 'staff',
           name: 'staff',
           component: () => import('@/views/StaffView.vue'),
+        },
+        {
+          path: 'customers',
+          name: 'customers',
+          component: () => import('@/views/CustomerView.vue'),
         },
       ],
     },

@@ -19,12 +19,14 @@
       </div>
       <div class="flex items-center gap-2">
         <button
+          v-if="!isLoginedIn"
           @click="router.push('/login')"
           class="px-3 py-2 rounded-lg bg-white border border-gray-200 text-sm text-gray-700 shadow-sm"
         >
           Đăng nhập
         </button>
         <button
+          v-else
           class="p-2 w-11 h-11 rounded-full bg-white border border-gray-200 text-gray-700 shadow-sm"
         >
           <i class="fa-solid fa-user"></i>
@@ -56,7 +58,7 @@
           @click="payNow"
           class="w-full py-3 rounded-xl border border-gray-200 bg-white text-gray-800 text-lg font-semibold shadow-sm hover:shadow-md transition"
         >
-          Thanh toán
+          Đơn của bạn
         </button>
       </div>
 
@@ -75,14 +77,18 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 
+import { useAuth } from '../stores/useAuth'
+
 const router = useRouter()
+
+const { isLoginedIn } = useAuth()
 
 function orderNow(): void {
   router.push('/order-food')
 }
 
 function payNow(): void {
-  alert('Chức năng thanh toán sẽ mở (chưa triển khai).')
+  router.push('/my-order')
 }
 </script>
 

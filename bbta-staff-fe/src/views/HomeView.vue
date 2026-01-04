@@ -65,6 +65,10 @@
           <el-button type="primary" @click="router.push(`/thanh-toan/${serve_ss._id}`)"
             >Thanh toán</el-button
           >
+
+          <el-button type="danger" @click="cancelServeSession(serve_ss._id)">
+            Kết thúc phiên
+          </el-button>
         </div>
       </div>
     </template>
@@ -159,7 +163,7 @@
   </el-dialog>
 
   <el-dialog v-model="qrcodeShowRef" title="QR Code đăng nhập cho khách hàng">
-    <div class="flex justify-center p-4">
+    <div class="flex justify-center items-center flex-col p-4">
       <qrcode-vue
         :value="qrCodeValue"
         :size="200"
@@ -167,6 +171,11 @@
         :bg-color="'#ffffff'"
         :fg-color="'#000000'"
       />
+
+      <div class="mt-4 flex flex-col text-center">
+        <div>Hoặc truy cập đường dẫn:</div>
+        <a :href="qrCodeValue" target="_blank" class="text-blue-600">{{ qrCodeValue }}</a>
+      </div>
     </div>
   </el-dialog>
 
@@ -936,6 +945,12 @@ const goServeSession = async (serve_session_id: string) => {
   ready_order.value = {}
 
   drawerSession.value = true
+}
+
+const cancelServeSession = async (serve_session_id: string) => {
+  await api.post('/serve-session/end/' + serve_session_id)
+
+  await getTables()
 }
 
 const cancelFood = async () => {

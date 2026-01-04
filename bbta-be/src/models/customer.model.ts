@@ -7,6 +7,7 @@ const customer_schema = new Schema({
   birthday: { type: String },
 
   password: { type: String, required: true },
+  is_deleted: { type: Boolean, default: false },
 });
 
 const customer_model = model('Customer', customer_schema);

@@ -30,7 +30,7 @@
                   </div>
 
                   <div class="flex justify-end mt-4">
-                    <el-button size="small" type="warning">Cập nhật</el-button>
+                    <!-- <el-button size="small" type="warning">Cập nhật</el-button> -->
                     <el-button size="small" type="danger" @click="clickDelete(t._id)"
                       >Xóa</el-button
                     >

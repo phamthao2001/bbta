@@ -43,7 +43,7 @@
         </div>
         <div class="flex mb-7">
           <el-button
-            v-if="session.is_updated_served"
+            v-if="!session.is_updated_served"
             @click="updateListServe"
             type="primary"
             size="large"
@@ -53,7 +53,7 @@
       </div>
 
       <div class="flex flex-col gap-2 w-[50%] p-3">
-        <template v-if="session.is_updated_served">
+        <template v-if="!session.is_updated_served">
           <div class="flex h-full w-full justify-center items-center">
             Có cập nhật các món phục vụ, hãy Xác nhận để thực hiện thanh toán
           </div>
@@ -133,6 +133,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { api } from '@/plugin/axios'
+import router from '@/router'
 
 const route = useRoute()
 
@@ -217,7 +218,13 @@ onMounted(async () => {
   await getAllOrder()
 })
 
-const confirmSession = async () => {}
+const confirmSession = async () => {
+  await api.post('/serve-session/pay/' + serve_session_id, {
+    money: sum_price.value,
+  })
+
+  await router.push('/home')
+}
 </script>
 
 <style lang="scss"></style>

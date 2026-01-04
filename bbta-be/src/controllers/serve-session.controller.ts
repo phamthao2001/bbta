@@ -31,6 +31,23 @@ const createServeSession = async (req: Request, res: Response) => {
   }
 };
 
+const getSumaryServeSession = async (req: Request, res: Response) => {
+  try {
+    const { from, to } = req.query;
+
+    const serve_sessions = await serve_session_model
+      .find({
+        ended_at: { $gte: new Date(from as string), $lte: new Date(to as string) },
+        money: { $ne: null },
+      })
+      .populate('table_ids bills.items.food_id');
+
+    return res.status(200).json({ serve_sessions });
+  } catch (error) {
+    return res.status(500).json({ message: 'Error retrieving serve sessions', error });
+  }
+};
+
 const getServeSessionById = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
@@ -122,9 +139,42 @@ const genBill = async (req: Request, res: Response) => {
   }
 };
 
+const payServeSession = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const serve_session = await serve_session_model.findByIdAndUpdate(
+      id,
+      { ended_at: new Date(), money: req.body.money },
+      { new: true },
+    );
+    return res.status(200).json({ serve_session });
+  } catch (e) {
+    return res.status(500).json({ message: 'Error retrieving serve session', e });
+  }
+};
+
+const endServeSession = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const serve_session = await serve_session_model.findByIdAndUpdate(
+      id,
+      { ended_at: new Date() },
+      { new: true },
+    );
+
+    return res.status(200).json({ serve_session });
+  } catch (e) {
+    return res.status(500).json({ message: 'Error retrieving serve session', e });
+  }
+};
+
 export const serve_session_controller = {
   createServeSession,
   getServeSessionById,
   switchTable,
   genBill,
+  endServeSession,
+  payServeSession,
+  getSumaryServeSession,
 };

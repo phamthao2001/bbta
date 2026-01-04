@@ -303,7 +303,7 @@ const onConfirm = async ({ selectedValues }) => {
   showDetail.value = false
   showPicker.value = false
 
-  router.push('/home')
+  router.push('/my-order')
 }
 
 onMounted(async () => {
