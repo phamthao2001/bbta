@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+import { useAuth } from '@/stores/useAuth'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -29,6 +31,16 @@ const router = createRouter({
       component: () => import('@/pages/MyOrder.vue'),
     },
   ],
+})
+
+const { isLoginedIn } = useAuth()
+
+router.beforeEach((to, from, next) => {
+  if (to.name !== 'login' && !isLoginedIn.value) {
+    next({ name: 'login' })
+  } else {
+    next()
+  }
 })
 
 export default router
