@@ -207,7 +207,7 @@ const sum_price = computed(() => {
 })
 
 const qrURL = computed(() => {
-  return `https://img.vietqr.io/image/vpbank-2746520062001-compact2.jpg?amount=${sum_price.value}&addInfo={#user}&accountName=bbta`
+  return `https://api.vietqr.io/image/970436-1040311053-lxMnomD.jpg?accountName=BBTA%20THAO&amount=${sum_price.value}`
 })
 
 const getAllOrder = async () => {

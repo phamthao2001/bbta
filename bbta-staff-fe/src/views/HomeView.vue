@@ -4,6 +4,8 @@
       <el-button type="primary" @click="openDialogAddSessionService()"
         >Khởi tạo lượt khách hàng<i class="fa-solid fa-plus ml-1"></i
       ></el-button>
+
+      <el-button type="info" @click="router.push('/kitchen')">Vào giao diện bếp</el-button>
     </div>
 
     <template v-for="table in table_booking" :key="table._id">
