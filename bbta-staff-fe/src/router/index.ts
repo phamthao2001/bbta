@@ -26,6 +26,11 @@ const router = createRouter({
         },
       ],
     },
+    {
+      path: '/kitchen',
+      name: 'kitchen',
+      component: () => import('@/views/KitchenView.vue'),
+    },
   ],
 })
 

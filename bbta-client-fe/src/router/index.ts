@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import { useAuth } from '@/stores/useAuth'
+import { api } from '@/plugin/axios'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,17 +30,26 @@ const router = createRouter({
       name: 'my-order',
       component: () => import('@/pages/MyOrder.vue'),
     },
+    {
+      path: '/table-booking',
+      name: 'table-booking',
+      component: () => import('@/pages/TableBooking.vue'),
+    },
   ],
 })
 
-const { isLoginedIn } = useAuth()
+router.beforeEach(async (to, from, next) => {
+  const serve_session = localStorage.getItem('serve-session-id')
 
-router.beforeEach((to, from, next) => {
-  if (to.name !== 'login' && !isLoginedIn.value) {
-    next({ name: 'login' })
-  } else {
-    next()
+  if (serve_session) {
+    const { data } = await api.get(`/serve-session/check/${serve_session}`)
+
+    if (!data.exist) {
+      localStorage.removeItem('serve-session-id')
+    }
   }
+
+  next()
 })
 
 export default router

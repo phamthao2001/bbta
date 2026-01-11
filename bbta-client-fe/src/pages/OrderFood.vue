@@ -270,6 +270,12 @@ const pickers = computed(() => {
 
 const getSession = async () => {
   const serveSession = localStorage.getItem('serve-session-id')
+
+  if (!serveSession) {
+    router.push('/home')
+    return
+  }
+
   if (!serveSession) return
   const res = await api.get(`/serve-session/${serveSession}`)
 

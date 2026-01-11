@@ -5,6 +5,7 @@ import { food_route } from './food.route';
 import { order_route } from './order.route';
 import { serve_session_route } from './serve-session.route';
 import { staff_route } from './staff.route';
+import { table_booking_route } from './table-booking.route';
 import { table_route } from './table.route';
 
 export const all_routes = [
@@ -16,4 +17,5 @@ export const all_routes = [
   auth_route,
   admin_route,
   customer_route,
+  table_booking_route,
 ];

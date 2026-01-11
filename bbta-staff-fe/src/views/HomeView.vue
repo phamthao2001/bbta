@@ -6,6 +6,38 @@
       ></el-button>
     </div>
 
+    <template v-for="table in table_booking" :key="table._id">
+      <div
+        class="mb-4 p-4 border border-gray-200 rounded bg-white shadow-sm hover:shadow-md transition-shadow"
+      >
+        <div class="text-[14px] mb-1">
+          Mã đặt bàn: <span class="font-bold">{{ table._id }}</span>
+        </div>
+        <div class="text-sm">
+          Khách hàng: <span class="font-bold">{{ table.customer_id.name }}</span>
+        </div>
+        <div class="text-sm">
+          Số điện thoại: <span class="font-bold">{{ table.customer_id.phone }}</span>
+        </div>
+        <div class="text-sm mb-2">
+          Thời điểm đặt: <span class="font-bold">{{ formatDate(table.booking_time) }}</span>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <template v-for="tableId in table.table_ids" :key="tableId">
+            <div class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+              {{ tables.find((t) => t._id === tableId)?.name || 'Bàn đã xóa hoặc không tồn tại' }}
+            </div>
+          </template>
+        </div>
+
+        <div class="flex py-2">
+          <el-button type="primary" @click="servedBooking(table._id)">Bắt đầu phục vụ</el-button>
+
+          <el-button type="danger" @click="cancelBooking(table._id)">Hủy đặt bàn</el-button>
+        </div>
+      </div>
+    </template>
+
     <template v-for="serve_ss in serve_session" :key="serve_ss._id">
       <div
         class="p-1 mb-4 border border-gray-200 rounded bg-white gap-2 shadow-sm hover:shadow-md transition-shadow"
@@ -24,7 +56,7 @@
                   class="flex p-2 border border-gray-200 rounded bg-white gap-2 shadow-sm hover:shadow-md transition-shadow h-full"
                 >
                   <div
-                    class="w-14 h-14 flex justify-center items-center bg-blue-500 text-white rounded-full mr-2"
+                    class="w-10 h-10 flex justify-center items-center bg-blue-500 text-white rounded-full mr-2"
                   >
                     <i class="fa-solid fa-bell-concierge text-2xl"></i>
                   </div>
@@ -684,9 +716,13 @@ const mapLabelCategory: Record<(typeof CATEGORIES)[number], string> = {
 
 const tables = ref([])
 const serve_session = ref([])
+const table_booking = ref([])
 
 const table_ids_active = computed(() => {
-  return serve_session.value.map((session) => session.table_ids).flat()
+  return [
+    ...serve_session.value.map((session) => session.table_ids).flat(),
+    ...table_booking.value.map((booking) => booking.table_ids).flat(),
+  ]
 })
 
 const table_inactive = computed(() => {
@@ -730,6 +766,24 @@ const getTables = async () => {
 
   tables.value = res.data.tables
   serve_session.value = res.data.serve_session
+  table_booking.value = res.data.table_booking.filter((ss) => ss.state === 'booking')
+  console.log(tables.value, serve_session.value, table_booking.value)
+}
+
+const servedBooking = async (serve_ss_id: string) => {
+  try {
+    await api.post(`/table-booking/start-served/${serve_ss_id}`)
+
+    await getTables()
+  } catch (error) {}
+}
+
+const cancelBooking = async (serve_ss_id: string) => {
+  try {
+    await api.post(`/table-booking/cancel-booking/${serve_ss_id}`)
+
+    await getTables()
+  } catch (error) {}
 }
 
 onMounted(async () => {

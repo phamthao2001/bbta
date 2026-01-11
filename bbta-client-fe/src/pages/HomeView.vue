@@ -27,10 +27,17 @@
         </button>
         <button
           v-else
+          @click="router.push('/table-booking')"
+          class="px-3 py-2 rounded-lg bg-blue-500 border border-gray-200 text-sm text-white shadow-sm"
+        >
+          Đặt bàn
+        </button>
+        <!-- <button
+          v-else
           class="p-2 w-11 h-11 rounded-full bg-white border border-gray-200 text-gray-700 shadow-sm"
         >
           <i class="fa-solid fa-user"></i>
-        </button>
+        </button> -->
       </div>
     </header>
 
@@ -47,7 +54,7 @@
         Hương vị than hoa, nồi lẩu nghi ngút — đặt món dễ dàng, thanh toán nhanh chóng.
       </p>
 
-      <div class="space-y-3 w-full max-w-sm">
+      <div v-if="serve_session_id" class="space-y-3 w-full max-w-sm">
         <button
           @click="orderNow"
           class="w-full py-3 rounded-xl bg-green-600 text-white text-lg font-semibold shadow-lg hover:bg-green-700 transition"
@@ -62,6 +69,11 @@
         </button>
       </div>
 
+      <div v-else class="text-sm text-gray-500 mt-6">
+        <div class="">Bạn chưa có phiên phục vụ tại quán.</div>
+        <div>Cần truy cập phiên phục vụ để đặt món và sử dụng dịch vụ.</div>
+      </div>
+
       <div class="mt-8 text-xs text-gray-500">Giờ mở cửa 16h00 - 23h00</div>
     </main>
 
@@ -69,7 +81,7 @@
     <footer
       class="px-4 py-4 text-center text-xs text-gray-500 border-t border-transparent/20 bg-white/60"
     >
-      © 2025 BBTA — Quán Nướng & Lẩu. Tải ứng dụng để đặt nhanh hơn.
+      © 2026 BBTA — Quán Nướng & Lẩu. Tải ứng dụng để đặt nhanh hơn.
     </footer>
   </div>
 </template>
@@ -80,6 +92,7 @@ import { useRouter } from 'vue-router'
 import { useAuth } from '../stores/useAuth'
 
 const router = useRouter()
+const serve_session_id = localStorage.getItem('serve-session-id') || ''
 
 const { isLoginedIn } = useAuth()
 

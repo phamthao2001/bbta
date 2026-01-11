@@ -5,6 +5,8 @@ const route = Router();
 
 route.get('/order/:id', order_controller.getOrderById);
 
+route.get('/orders/for-kitchen', order_controller.getOrderForKitchen);
+
 route.post('/order/create', order_controller.createOrder);
 
 route.post('/order/cancel-food', order_controller.canceledFood);

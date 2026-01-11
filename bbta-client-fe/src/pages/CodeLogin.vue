@@ -26,7 +26,7 @@ const verifyCode = async () => {
 
     router.push('/home')
   } catch (error) {
-    router.push('/welcome')
+    // router.push('/welcome')
   }
 }
 

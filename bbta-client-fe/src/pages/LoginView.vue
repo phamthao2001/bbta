@@ -100,7 +100,7 @@ const remember = ref(false)
 const showPassword = ref(false)
 const loading = ref(false)
 const error = ref<string | null>(null)
-const { isLoginedIn } = useAuth()
+const { isLoginedIn, customerId } = useAuth()
 
 const phoneError = computed(() => {
   if (!phone.value) return null
@@ -139,6 +139,7 @@ async function submit() {
       }
       router.push('/home').catch(() => null)
       isLoginedIn.value = true
+      customerId.value = res.data.customer._id
     } else {
       error.value = res?.data?.message ?? 'Đăng nhập không thành công'
     }

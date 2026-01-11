@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import order_model from '../models/order.model';
 import serve_session_model from '../models/serve-session.model';
 
-const generateCodeLogin = (): string => {
+export const generateCodeLogin = (): string => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
   const length = 64;
@@ -169,6 +169,18 @@ const endServeSession = async (req: Request, res: Response) => {
   }
 };
 
+const checkServeSession = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const serve_session = await serve_session_model.findOne({ _id: id, ended_at: { $eq: null } });
+
+    return res.status(200).json({ exist: !!serve_session });
+  } catch (e) {
+    return res.status(500).json({ message: 'Error retrieving serve session', e });
+  }
+};
+
 export const serve_session_controller = {
   createServeSession,
   getServeSessionById,
@@ -177,4 +189,5 @@ export const serve_session_controller = {
   endServeSession,
   payServeSession,
   getSumaryServeSession,
+  checkServeSession,
 };

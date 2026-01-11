@@ -139,7 +139,10 @@ const session = ref<any>({})
 const getData = async () => {
   try {
     const serve_session_id = localStorage.getItem('serve-session-id')
-    if (!serve_session_id) return
+    if (!serve_session_id) {
+      router.push('/home')
+      return
+    }
     const res = await api.get(`/serve-session/${serve_session_id}`)
     orders.value = res.data.order_serve_session || []
     session.value = res.data.serve_session || {}

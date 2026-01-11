@@ -170,9 +170,34 @@ const serveFood = async (req: Request, res: Response) => {
   }
 };
 
+const getOrderForKitchen = async (req: Request, res: Response) => {
+  try {
+    const serve_sessions = await serve_session_model.find({ ended_at: null });
+
+    const allOrders = [];
+
+    for (const ss of serve_sessions) {
+      const id = ss._id;
+
+      const orders = await order_model
+        .find({
+          serve_session_id: id,
+          preparing: { $exists: true, $ne: [] },
+        })
+        .populate('preparing.food_id preparing.table_id');
+      allOrders.push(...orders);
+    }
+
+    return res.status(200).json({ allOrders });
+  } catch (error) {
+    return res.status(500).json({ message: 'Error fetching orders for kitchen', error });
+  }
+};
+
 export const order_controller = {
   createOrder,
   getOrderById,
   canceledFood,
   serveFood,
+  getOrderForKitchen,
 };

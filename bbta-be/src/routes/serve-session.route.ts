@@ -3,6 +3,8 @@ import { serve_session_controller } from '../controllers/serve-session.controlle
 
 const route = Router();
 
+route.get('/serve-session/check/:id', serve_session_controller.checkServeSession);
+
 route.post('/serve-session/create', serve_session_controller.createServeSession);
 
 route.get('/serve-session/:id', serve_session_controller.getServeSessionById);
